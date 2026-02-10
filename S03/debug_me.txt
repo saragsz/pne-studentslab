@@ -1,0 +1,7 @@
+The program throws an error (ZeroDivisionError) at the precise moment when the function t1 is set to 0,
+when the operation on the variable t3 (line 11) is executed and when trying to divide by 0,
+the error occurs because it is impossible.
+This will happen any time that a and c takes the same value because the substraction gives the 0 value.
+
+This could be fixed by changing the value of c or d to one that does not generate the value 0.(not the same)
+That is why results 1,3 and 4 are properly computed.

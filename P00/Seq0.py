@@ -7,3 +7,8 @@ def seq_read_fasta(filename):
     text = file_contents.split("\n")[1:]
     final_text = "".join(text)
     return final_text
+
+def seq_len(seq):
+    return len(seq)
+
+def seq_count_base(seq, base):

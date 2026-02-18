@@ -14,3 +14,12 @@ def seq_len(seq):
 def seq_count_base(seq, base):
     return seq.count(base)
 
+def seq_count(seq):
+    bases_list = ["A", "C", "T", "G"]
+    d = {'A':0, 'T':0, 'C':0, 'G':0}
+    for base in bases_list:
+        d[base] = seq.count(base)
+    return d
+
+
+

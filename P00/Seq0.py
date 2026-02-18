@@ -24,4 +24,10 @@ def seq_count(seq):
 def seq_reverse(seq, n):
     return seq[:n][::-1]
 
+def seq_complement(seq):
+    replace = {'A':'T', 'T':'A', 'C':'G', 'G':'C'}
+    complement_seq = ""
+    for base in seq:
+        complement_seq += replace[base]
+    return complement_seq
 

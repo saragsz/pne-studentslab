@@ -21,5 +21,7 @@ def seq_count(seq):
         d[base] = seq.count(base)
     return d
 
+def seq_reverse(seq, n):
+    return seq[:n][::-1]
 
 

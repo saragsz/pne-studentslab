@@ -16,7 +16,7 @@ def seq_count_base(seq, base):
 
 def seq_count(seq):
     bases_list = ["A", "C", "T", "G"]
-    d = {'A':0, 'T':0, 'C':0, 'G':0}
+    d = {}
     for base in bases_list:
         d[base] = seq.count(base)
     return d

@@ -2,6 +2,11 @@ class Seq:
     def __init__(self, strbases = None):
         bases = ["A", "T", "G", "C"]
 
+        if strbases is None:
+            self.strbases = "NULL"
+            print("NULL sequence created")
+            return
+
         for i in strbases:
             if i not in bases:
                 self.strbases = "ERROR"

@@ -31,7 +31,7 @@ class Seq:
         else:
             return self.strbases.count(base)
 
-    def seq_count(self):
+    def count(self):
         bases_list = ["A", "C", "T", "G"]
         d = {}
         for base in bases_list:

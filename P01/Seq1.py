@@ -10,7 +10,7 @@ class Seq:
         for i in strbases:
             if i not in bases:
                 self.strbases = "ERROR"
-                print("ERROR!!")
+                print("INVALID sequence created")
                 return
 
         self.strbases = strbases
@@ -20,4 +20,7 @@ class Seq:
         return self.strbases
 
     def len(self):
-        return len(self.strbases)
+        if self.strbases == "NULL" or self.strbases == "ERROR":
+            return 0
+        else:
+            return len(self.strbases)

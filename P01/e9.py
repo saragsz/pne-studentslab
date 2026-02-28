@@ -1,5 +1,6 @@
-from pathlib import Path
 from Seq1 import Seq
+
+print("-----| Practice 1, Exercise 9 |------")
 
 s = Seq()
 FILENAME = "../S04/sequences/U5.txt"

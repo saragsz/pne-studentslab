@@ -2,10 +2,11 @@ from Seq1 import Seq
 
 print("-----| Practice 1, Exercise 4 |------")
 
-s1 = Seq()
-s2 = Seq("ACTGA")
-s3 = Seq("Invalid sequence")
+seq_list = [Seq(),Seq("ACTGA"),Seq("Invalid sequence")]
 
-print(f"Sequence 1: (Lenght:{s1.len()}) {s1}")
-print(f"Sequence 1: (Lenght:{s2.len()}) {s2}")
-print(f"Sequence 1: (Lenght:{s3.len()}) {s3}")
+index = 0
+for seq in seq_list:
+    print(f"Sequence {index + 1}: (Length: {seq.len()}) {seq}")
+    index += 1
+
+

@@ -2,13 +2,11 @@ from Seq1 import Seq
 
 print("-----| Practice 1, Exercise 6 |------")
 
-s1 = Seq()
-s2 = Seq("ACTGA")
-s3 = Seq("Invalid sequence")
+seq_list = [Seq(),Seq("ACTGA"),Seq("Invalid sequence")]
 
-print(f"Sequence 1: (Length: {s1.len()}) {s1}")
-print(f"Bases{s1.count()}")
-print(f"Sequence 2: (Length: {s2.len()}) {s2}")
-print(f"Bases{s2.count()}")
-print(f"Sequence 3: (Length: {s3.len()}) {s3}")
-print(f"Bases{s3.count()}")
+index = 0
+for seq in seq_list:
+    print(f"Sequence {index}: (Length: {seq.len()}) {seq}")
+    print(f"Bases{seq.count()}")
+    index += 1
+

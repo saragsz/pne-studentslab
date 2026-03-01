@@ -9,6 +9,7 @@ for seq in seq_list:
     print(f"Sequence {index}: (Length: {seq.len()}) {seq}")
     print(f"Bases{seq.count()}")
     print(f"Rev:{seq.reverse()}")
+    index += 1
 
 
 

@@ -20,4 +20,4 @@ for gene in gene_list:
         if counter[base] > max_count:
             max_count = counter[base]
             most_freq_base = base
-    print(f"Gene:{gene},Most frequent base:{most_freq_base}")
+    print(f"Gene {gene}: Most frequent base: {most_freq_base}")

@@ -2,7 +2,7 @@ import socket
 
 
 PORT = 8081
-IP = "212.128.255.64" # it depends on the machine the server is running
+IP = "212.128.255.90" # it depends on the machine the server is running
 
 
 while True:

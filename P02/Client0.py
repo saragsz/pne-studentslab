@@ -4,7 +4,7 @@ class Client:
         self.port = port
 
     def __str__(self):
-        print (f"Connection to SERVER at {self.ip}, PORT: {self.port}")
+        return f"Connection to SERVER at {self.ip}, PORT: {self.port}"
 
     def ping(self):
         print("OK!")

@@ -7,7 +7,7 @@ EXERCISE = 5
 print(f"-----| Practice {PRACTICE}, Exercise {EXERCISE} |------")
 
 # -- Parameters of the server to talk to
-IP = "212.128.255.72"
+IP = "127.0.0.1"
 PORT = 8080
 
 # -- Create a client object
@@ -17,17 +17,17 @@ c = Client(IP, PORT)
 gene = "FRAT1"
 s = Seq()
 rute = "../S04/sequences/" + gene + ".txt"
-sequence = s.read_fasta(rute)
-for i in range(6):
-    l = sequence[10 * i : 10]
-    response = c.talk(str(l))
+s.read_fasta(rute)
+sequence = s.strbases
+print(f"Gene FRAT1:{sequence}")
+print(f"Sending the FRAT1 Gene to the server,in fragments of 10 bases...")
 
 
+for i in range(5):
 
+    fragment = sequence[10*i : 10*i+10]
 
+    print(f"Fragment {i+1}: {fragment}")
 
+    response = c.talk(f"Fragment {i + 1}: {fragment}")
 
-    print(f"Sending the {gene} Gene to the server...")
-    response = c.talk(str(s))
-    print(f"To server:{str(s)}")
-    print(f"From server: {response}")

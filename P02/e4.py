@@ -12,6 +12,7 @@ PORT = 8080
 
 # -- Create a client object
 c = Client(IP, PORT)
+print(c)
 
 
 gene_list = ["U5", "ADA", "FRAT1", "FXN", "RNU6_269P"]
@@ -20,6 +21,7 @@ s = Seq()
 for gene in gene_list:
     rute = "../S04/sequences/" + gene + ".txt"
     s.read_fasta(rute)
+
     print(f"Sending the {gene} Gene to the server...")
     response = c.talk(str(s))
     print(f"To server:{str(s)}")

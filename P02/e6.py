@@ -7,24 +7,25 @@ EXERCISE = 6
 print(f"-----| Practice {PRACTICE}, Exercise {EXERCISE} |------")
 
 # -- Parameters of the server to talk to
-IP1 = "127.0.0.1"
+IP1 = "212.128.255.72"
 PORT1 = 8080
-IP2 = "127.0.0.1"
+
+IP2 = "212.128.255.72"
 PORT2 = 8081
 
 # -- Create a client object
 c1 = Client(IP1, PORT1)
+print(c1)
 c2 = Client(IP2, PORT2)
-
+print(c2)
 
 gene = "../S04/sequences/FRAT1.txt"
 s = Seq()
 s.read_fasta(gene)
-sequence = s.strbases
+sequence = str(s)
 
 print(f"Gene FRAT1:{sequence}")
 print(f"Sending the FRAT1 Gene to the server,in fragments of 10 bases...")
-
 
 for i in range(10):
 

@@ -14,11 +14,11 @@ PORT = 8080
 c = Client(IP, PORT)
 
 
-gene = "FRAT1"
+gene = "../S04/sequences/FRAT1.txt"
 s = Seq()
-rute = "../S04/sequences/" + gene + ".txt"
-s.read_fasta(rute)
+s.read_fasta(gene)
 sequence = s.strbases
+
 print(f"Gene FRAT1:{sequence}")
 print(f"Sending the FRAT1 Gene to the server,in fragments of 10 bases...")
 
@@ -27,7 +27,7 @@ for i in range(5):
 
     fragment = sequence[10*i : 10*i+10]
 
-    print(f"Fragment {i+1}: {fragment}")
+    print(f"Fragment {i + 1}: {fragment}")
 
     response = c.talk(f"Fragment {i + 1}: {fragment}")
 

@@ -25,14 +25,16 @@ ls.listen()
 
 print("The server is configured!")
 number_con = 0
+clients = []
 
 
-while True:
+while number_con < 5:
     # -- Waits for a client to connect
     print("Waiting for Clients to connect")
 
     try:
         (cs, client_ip_port) = ls.accept()
+        clients.append(client_ip_port)
 
         # Another connection!e
         number_con += 1
@@ -75,3 +77,9 @@ while True:
 
         # -- Close the data socket
         cs.close()
+
+print("The following clients has connected to the server:")
+for i, client in enumerate(clients):
+    print(f"Client {i}: {client}")
+
+ls.close()

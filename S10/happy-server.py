@@ -27,29 +27,44 @@ print("The server is configured!")
 while True:
     # -- Waits for a client to connect
     print("Waiting for Clients to connect")
-    (cs, client_ip_port) = ls.accept()
 
-    print("A client has connected to the server!")
+    try:
+        (cs, client_ip_port) = ls.accept()
 
-    # -- Read the message from the client
-    # -- The received message is in raw bytes
-    msg_raw = cs.recv(2048)
+    # -- Server stopped manually
+    except KeyboardInterrupt:
+        print("Server stopped by the user")
 
-    # -- We decode it for converting it
-    # -- into a human-redeable string
-    msg = msg_raw.decode()
+        # -- Close the listenning socket
+        ls.close()
 
-    # -- Print the received message
-    print(f"Message received: {msg}")
+        # -- Exit!
+        exit()
 
-    # -- Send a response message to the client
-    response = "HELLO. I am the Happy Server :-)\n"
+    # -- Execute this part if there are no errors
+    else:
 
-    # -- The message has to be encoded into bytes
-    cs.send(response.encode())
+        print("A client has connected to the server!")
 
-    # -- Close the data socket
-    cs.close()
+        # -- Read the message from the client
+        # -- The received message is in raw bytes
+        msg_raw = cs.recv(2048)
+
+        # -- We decode it for converting it
+        # -- into a human-redeable string
+        msg = msg_raw.decode()
+
+        # -- Print the received message
+        print(f"Message received: {msg}")
+
+        # -- Send a response message to the client
+        response = "HELLO. I am the Happy Server :-)\n"
+
+        # -- The message has to be encoded into bytes
+        cs.send(response.encode())
+
+        # -- Close the data socket
+        cs.close()
 
 
 

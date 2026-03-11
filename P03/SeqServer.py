@@ -68,14 +68,18 @@ while True:
             seq = Seq(cmd[1])
             response = seq.complement()
 
+        elif command == "REV":
+            seq = Seq(cmd[1])
+            response = seq.reverse()
 
+        elif command == "GENE":
+            gene_name = cmd[1]
+            file = f"../S04/sequences/{gene_name}.txt"
+            seq = Seq()
+            seq.read_fasta(file)
+            response = str(seq)
 
-
-
-
-
-
-        color_msg = colored(cmd[0] + " " + "command", "green")
+        color_msg = colored(cmd[0] , "green")
         print(f"{color_msg}")
 
         cs.send(response.encode())

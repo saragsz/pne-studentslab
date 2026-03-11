@@ -1,6 +1,6 @@
 import socket
 from termcolor import colored
-from P01.Seq1 import Seq
+from Seq1 import Seq
 
 
 ls = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -39,7 +39,7 @@ while True:
 
         seq_list = ["ACGT","TGCT","CCGA","GTAC"]
 
-        if cmd[0] == "PING":
+        if command == "PING":
 
             color_msg = colored(cmd[0] + " " + "command" , "green")
             response = "OK!"
@@ -47,31 +47,40 @@ while True:
             print(f"{color_msg}")
             print("OK!")
 
-            cs.send(response.encode())
-            cs.close()
+        elif command == "GET":
 
-        elif cmd[0] == "GET":
             number = int(cmd[1])
-
-            color_msg = colored(cmd[0] + " " + "command", "green")
             response = seq_list[number]
-
-            print(f"{color_msg}")
             print(seq_list[number])
 
-            cs.send(response.encode())
-            cs.close()
-
-        elif cmd[0] == "INFO":
+        elif command == "INFO":
             seq = Seq(cmd[1])
             n_bases = seq.count()
+            long = len(cmd[1])
+            response = f"Sequence: {cmd[1]} \n Total lenght: {long}"
 
             for key, value in n_bases.items():
-                percentage = (value / len(cmd[1])) * 100
+                percentage = (value / long) * 100
                 perc_round = round(percentage,2)
-                print (f"{key} : {value} ({perc_round})")
+                response += f" {key} : {value} ({perc_round} %)"
+
+        elif command == "COMP":
+            seq = Seq(cmd[1])
+            response = seq.complement()
 
 
+
+
+
+
+
+
+        color_msg = colored(cmd[0] + " " + "command", "green")
+        print(f"{color_msg}")
+
+        cs.send(response.encode())
+        cs.close()
+        print(response)
 
 
 

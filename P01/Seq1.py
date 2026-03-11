@@ -64,3 +64,6 @@ class Seq:
             text = file_contents.split("\n")[1:]
             final_text = "".join(text)
             self.strbases= final_text
+
+
+

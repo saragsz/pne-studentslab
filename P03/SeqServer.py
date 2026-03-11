@@ -1,5 +1,6 @@
 import socket
 from termcolor import colored
+from P01.Seq1 import Seq
 
 
 ls = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -36,7 +37,7 @@ while True:
         cmd = msg.strip( ).split(" ",1)
         command = cmd[0]
 
-        seq_list = ["ACGT","TGCT","CCGA"]
+        seq_list = ["ACGT","TGCT","CCGA","GTAC"]
 
         if cmd[0] == "PING":
 
@@ -60,5 +61,18 @@ while True:
 
             cs.send(response.encode())
             cs.close()
+
+        elif cmd[0] == "INFO":
+            seq = Seq(cmd[1])
+            n_bases = seq.count()
+
+            for key, value in n_bases.items():
+                percentage = (value / len(cmd[1])) * 100
+                perc_round = round(percentage,2)
+                print (f"{key} : {value} ({perc_round})")
+
+
+
+
 
 

@@ -36,6 +36,8 @@ while True:
         cmd = msg.strip( ).split(" ",1)
         command = cmd[0]
 
+        seq_list = ["ACGT","TGCT","CCGA"]
+
         if cmd[0] == "PING":
 
             color_msg = colored(cmd[0] + " " + "command" , "green")
@@ -46,3 +48,17 @@ while True:
 
             cs.send(response.encode())
             cs.close()
+
+        elif cmd[0] == "GET":
+            number = int(cmd[1])
+
+            color_msg = colored(cmd[0] + " " + "command", "green")
+            response = seq_list[number]
+
+            print(f"{color_msg}")
+            print(seq_list[number])
+
+            cs.send(response.encode())
+            cs.close()
+
+

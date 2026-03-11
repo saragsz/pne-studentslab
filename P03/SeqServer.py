@@ -37,7 +37,7 @@ while True:
         cmd = msg.strip( ).split(" ",1)
         command = cmd[0]
 
-        seq_list = ["ACGT","TGCT","CCGA","GTAC"]
+        seq_list = ["ACGT","TGCT","CCGA","GTAC","ACCT"]
 
         if command == "PING":
 

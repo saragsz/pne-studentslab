@@ -44,25 +44,21 @@ while True:
             color_msg = colored(cmd[0] + " " + "command" , "green")
             response = "OK!"
 
-            print(f"{color_msg}")
-            print("OK!")
-
         elif command == "GET":
 
             number = int(cmd[1])
             response = seq_list[number]
-            print(seq_list[number])
 
         elif command == "INFO":
             seq = Seq(cmd[1])
             n_bases = seq.count()
             long = len(cmd[1])
-            response = f"Sequence: {cmd[1]} \n Total lenght: {long}"
+            response = f"Sequence: {cmd[1]} \n Total lenght: {long} \n "
 
             for key, value in n_bases.items():
                 percentage = (value / long) * 100
                 perc_round = round(percentage,2)
-                response += f" {key} : {value} ({perc_round} %)"
+                response += f" {key} : {value} ({perc_round} %) \n "
 
         elif command == "COMP":
             seq = Seq(cmd[1])

@@ -72,7 +72,7 @@ ls.bind((IP, PORT))
 # -- Listen for connections
 ls.listen()
 
-print("Green server configured!")
+print("Server configured!")
 
 # --- MAIN LOOP
 while True:

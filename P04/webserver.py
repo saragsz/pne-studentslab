@@ -24,13 +24,20 @@ def process_client(s):
 
     # --- Decide what to return ---
     if path == "/info/A":
-        with open("info/A.html", "r") as f:
+        with open("html/info/A.html", "r") as f:
             body = f.read()
     elif path == "/info/C":
-        with open("info/C.html", "r") as f:
+        with open("html/info/C.html", "r") as f:
+            body = f.read()
+    elif path == "/info/G":
+        with open("html/info/G.html", "r") as f:
+            body = f.read()
+    elif path == "/info/T":
+        with open("html/info/T.html", "r") as f:
             body = f.read()
     else:
-        body = ""
+        with open("html/info/error.html", "r") as f:
+            body = f.read()
 
     # -- Response
     status_line = "HTTP/1.1 200 OK\n"

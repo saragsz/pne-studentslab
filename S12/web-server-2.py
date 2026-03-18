@@ -48,7 +48,7 @@ def process_client(s):
     status_line = "HTTP/1.1 200 OK\n"
 
     # -- Add the Content-Type header
-    header = "Content-Type: text/html\n"
+    header += "Content-Length: 5\n"
 
     # -- Add the Content-Length
     header += f"Content-Length: {len(body)}\n"

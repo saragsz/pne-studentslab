@@ -2,7 +2,7 @@ import socket
 import random
 
 class NumberGuesser:
-    def __init__(self):
+    def __init__(self) -> None:
         self.secret_number = random.randint(1, 100)
         self.attempts = []
         self.finished = False   # 👈 control del juego

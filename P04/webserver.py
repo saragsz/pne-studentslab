@@ -44,7 +44,7 @@ def process_client(s):
             body = f.read()
 
     else:
-        with open("html/info/error.html", "r") as f:
+        with open("html/error.html", "r") as f:
             body = f.read()
 
 

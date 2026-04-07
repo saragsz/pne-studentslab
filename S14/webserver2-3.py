@@ -15,21 +15,39 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
 
     def do_GET(self):
 
-        termcolor.cprint(self.requestline, 'green')
+        import http.server
+        import socketserver
 
-        if self.path == "/":
-            contents = "Welcome to my server"
-            self.send_response(200)
-        else:
-            contents = "Resource not available"
-            self.send_response(404)
+        PORT = 8080
 
+        socketserver.TCPServer.allow_reuse_address = True
 
-        self.send_header('Content-Type', 'text/plain')
-        self.send_header('Content-Length', len(contents.encode()))
-        self.end_headers()
+        class TestHandler(http.server.BaseHTTPRequestHandler):
 
-        self.wfile.write(contents.encode())
+            def do_GET(self):
+
+                path = self.path
+
+                if path == "/" or path == "/index.html":
+                    filename = "index.html"
+                    self.send_response(200)
+                else:
+                    filename = "error.html"
+                    self.send_response(404)
+
+                self.send_header("Content-type", "text/html")
+                self.end_headers()
+
+                try:
+                    with open(filename, "r") as f:
+                        content = f.read()
+                        self.wfile.write(content.encode())
+                except:
+                    self.wfile.write(b"<h1>File not found</h1>")
+
+        with socketserver.TCPServer(("", PORT), TestHandler) as httpd:
+            print(f"Serving at port {PORT}")
+            httpd.serve_forever()
 
 
 # ------------------------

@@ -14,40 +14,34 @@ socketserver.TCPServer.allow_reuse_address = True
 class TestHandler(http.server.BaseHTTPRequestHandler):
 
     def do_GET(self):
+        """This method is called whenever the client invokes the GET method
+        in the HTTP protocol request"""
 
-        import http.server
-        import socketserver
+        # Print the request line
+        termcolor.cprint(self.requestline, 'green')
 
-        PORT = 8080
+        # IN this simple server version:
+        # We are NOT processing the client's request
+        # It is a happy server: It always returns a message saying
+        # that everything is ok
 
-        socketserver.TCPServer.allow_reuse_address = True
+        # Message to send back to the client
+        contents = "I am the happy server! :-)"
 
-        class TestHandler(http.server.BaseHTTPRequestHandler):
+        # Generating the response message
+        self.send_response(200)  # -- Status line: OK!
 
-            def do_GET(self):
+        # Define the content-type header:
+        self.send_header('Content-Type', 'text/plain')
+        self.send_header('Content-Length', len(contents.encode()))
 
-                path = self.path
+        # The header is finished
+        self.end_headers()
 
-                if path == "/" or path == "/index.html":
-                    filename = "index.html"
-                    self.send_response(200)
-                else:
-                    filename = "error.html"
-                    self.send_response(404)
+        # Send the response message
+        self.wfile.write(contents.encode())
 
-                self.send_header("Content-type", "text/html")
-                self.end_headers()
-
-                try:
-                    with open(filename, "r") as f:
-                        content = f.read()
-                        self.wfile.write(content.encode())
-                except:
-                    self.wfile.write(b"<h1>File not found</h1>")
-
-        with socketserver.TCPServer(("", PORT), TestHandler) as httpd:
-            print(f"Serving at port {PORT}")
-            httpd.serve_forever()
+        return
 
 
 # ------------------------
@@ -69,3 +63,4 @@ with socketserver.TCPServer(("", PORT), Handler) as httpd:
         print("")
         print("Stopped by the user")
         httpd.server_close()
+

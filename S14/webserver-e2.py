@@ -1,6 +1,5 @@
 import http.server
 import socketserver
-import termcolor
 
 # Define the Server's port
 PORT = 8080
@@ -12,33 +11,32 @@ socketserver.TCPServer.allow_reuse_address = True
 class TestHandler(http.server.BaseHTTPRequestHandler):
 
     def do_GET(self):
-        """Called whenever the client sends a GET request"""
 
-        # Print request line
-        termcolor.cprint(self.requestline, 'green')
+        path = self.path
 
-        # Check requested resource
-        if self.path == "/":
-            contents = "Welcome to my server"
+        # Main page (2 ways to access)
+        if path == "/" or path == "/index.html":
+            filename = "index.html"
             self.send_response(200)
         else:
-            contents = "Resource not available"
+            filename = "error.html"
             self.send_response(404)
 
-        # Headers
-        self.send_header('Content-Type', 'text/plain')
-        self.send_header('Content-Length', len(contents.encode()))
+        self.send_header("Content-type", "text/html")
         self.end_headers()
 
-        # Body
-        self.wfile.write(contents.encode())
-
-        return
+        try:
+            with open(filename, "r") as f:
+                content = f.read()
+                self.wfile.write(content.encode())
+        except FileNotFoundError:
+            self.wfile.write(b"<h1>File not found</h1>")
 
 
 # ------------------------
 # Server MAIN program
 # ------------------------
+
 Handler = TestHandler
 
 with socketserver.TCPServer(("", PORT), Handler) as httpd:

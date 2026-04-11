@@ -14,7 +14,6 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
 
         path = self.path
 
-        # Main page (2 ways to access)
         if path == "/" or path == "/index.html":
             filename = "index.html"
             self.send_response(200)
@@ -32,11 +31,7 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         except FileNotFoundError:
             self.wfile.write(b"<h1>File not found</h1>")
 
-
-# ------------------------
 # Server MAIN program
-# ------------------------
-
 Handler = TestHandler
 
 with socketserver.TCPServer(("", PORT), Handler) as httpd:

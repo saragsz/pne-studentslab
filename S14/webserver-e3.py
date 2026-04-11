@@ -21,20 +21,16 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         # Remove initial "/"
         requested_path = self.path.lstrip("/")
 
-        # If root "/", serve index.html (optional but recomendable)
         if requested_path == "":
             requested_path = "index.html"
 
         file_path = Path(requested_path)
 
         try:
-            # Try to open requested file
             content = file_path.read_text()
-
             self.send_response(200)
 
         except FileNotFoundError:
-            # If file does not exist → serve error.html
             error_file = Path("error.html")
 
             try:

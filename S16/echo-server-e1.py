@@ -11,7 +11,7 @@ socketserver.TCPServer.allow_reuse_address = True
 
 
 def read_html_file(filename):
-    contents = Path("S16/html/" + filename).read_text()
+    contents = Path("html/" + filename).read_text()
     contents = j.Template(contents)
     return contents
 
@@ -27,7 +27,7 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
 
         # MAIN PAGE
         if path == "/":
-            contents = Path("S16/html/form-1.html").read_text()
+            contents = Path("html/form-1.html").read_text()
 
             self.send_response(200)
             self.send_header('Content-Type', 'text/html')
@@ -53,7 +53,7 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
 
         # ERROR
         else:
-            contents = Path("S16/html/error.html").read_text()
+            contents = Path("html/error.html").read_text()
 
             self.send_response(404)
             self.send_header('Content-Type', 'text/html')

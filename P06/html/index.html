@@ -9,30 +9,34 @@
 
     <h1>SEQ2 Server</h1>
     <p>Access to the server</p>
+
     <hr>
 
-    <form action="echo" method="get">
+    <form action="/ping" method="get">
         <label>Is the server alive?</label>
         <input type="submit" value="PING">
     </form>
+
     <hr>
 
-    <form action="echo" method="get">
+    <form action="/get" method="get">
         Get a sequence. Select sequence number:
-        <select name="sequence">
+        <select name="n">
             <option value="0">0</option>
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
             <option value="4">4</option>
         </select>
-            <input type="submit" value="GET">
-        </form>
+        <input type="submit" value="GET">
+    </form>
+
     <hr>
 
-    <form action="echo" method="get">
+
+    <form action="/gene" method="get">
         Get a gene. Select the gene:
-        <select name="gene">
+        <select name="name">
             <option value="U5">U5</option>
             <option value="ADA">ADA</option>
             <option value="FRAT1">FRAT1</option>
@@ -41,24 +45,26 @@
         </select>
         <input type="submit" value="GENE">
     </form>
+
     <hr>
 
-    <form action="echo" method="get">
+    <form action="/operation" method="get">
         Write a sequence:
-        <input type="text" name="sequence_input">
+        <input type="text" name="seq">
+
         <br><br>
 
         Select operation:
-        <input type="checkbox" name="operation" value="info"> Info
-        <input type="checkbox" name="operation" value="comp"> Comp
-        <input type="checkbox" name="operation" value="rev"> Rev
+        <input type="radio" name="op" value="info"> Info
+        <input type="radio" name="op" value="comp"> Comp
+        <input type="radio" name="op" value="rev"> Rev
+
         <br><br>
 
-        Perform operation:
         <input type="submit" value="OPERATE!">
     </form>
-    <hr>
 
+    <hr>
 
 </body>
 </html>

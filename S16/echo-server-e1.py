@@ -27,7 +27,7 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
 
         # MAIN PAGE
         if path == "/":
-            contents = Path("html/form-1.html").read_text()
+            contents = Path("html/form-e1.html").read_text()
 
             self.send_response(200)
             self.send_header('Content-Type', 'text/html')

@@ -55,7 +55,7 @@ class SeqHandler(http.server.BaseHTTPRequestHandler):
             code = 200
 
         elif path == "/operation":
-            sequence = params["seq"][0]
+            sequence = params["seq"][0].upper()
             op = params["op"][0]
 
             seq = Seq(sequence)

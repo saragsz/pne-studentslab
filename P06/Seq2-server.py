@@ -65,7 +65,6 @@ class SeqHandler(http.server.BaseHTTPRequestHandler):
                 counts = seq.count()
                 length = len(sequence)
 
-                result += f"<h3>Sequence: {sequence}</h3>"
                 result += f"<p>Total length: {length}</p>"
 
                 for k, v in counts.items():
@@ -73,13 +72,15 @@ class SeqHandler(http.server.BaseHTTPRequestHandler):
                     result += f"<p>{k}: {v} ({perc}%)</p>"
 
             elif op == "comp":
-                result = f"<h3>{seq.complement()}</h3>"
+                result = seq.complement()
 
             elif op == "rev":
-                result = f"<h3>{seq.reverse()}</h3>"
+                result = seq.reverse()
 
             content = Path("html/operation.html").read_text()
             content = content.replace("{{result}}", result)
+            content = content.replace("{{sequence}}", sequence)
+            content = content.replace("{{op}}", op)
             code = 200
 
         else:

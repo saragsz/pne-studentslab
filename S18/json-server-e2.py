@@ -31,8 +31,8 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
                 content_type = 'application/json'
                 error_code = 404
         else:
-            contents = "Not Found"
-            content_type = 'text/plain'
+            contents = Path ('error.html').read_text()
+            content_type = 'text/html'
             error_code = 404
 
         # Generar la respuesta HTTP

@@ -2,37 +2,37 @@ import json
 import termcolor
 from pathlib import Path
 
-# Leer el archivo JSON
+# 1. Leer el archivo JSON
 jsonstring = Path("people-e1.json").read_text()
 
-# Convertir JSON → lista de Python
+# 2. Convertir el texto JSON a una lista de objetos de Python
 people = json.loads(jsonstring)
 
-print()
+# 3. Imprimir el total de personas
+print(f"Total people in the database:  {len(people)}\n")
 
-# Número total de personas
-termcolor.cprint("Total people: ", 'green', end="")
-print(len(people))
-print()
+# 4. Recorrer la lista de personas e imprimir la información
+for person in people:
+    # Nombre
+    termcolor.cprint("Name: ", 'green', end='')
+    print(f"{person['Firstname']} {person['Lastname']}")
 
-# Recorrer todas las personas
-for i, person in enumerate(people):
-    termcolor.cprint(f"Person {i+1}", 'blue')
-
-    termcolor.cprint("  Name: ", 'green', end="")
-    print(person['Firstname'], person['Lastname'])
-
-    termcolor.cprint("  Age: ", 'green', end="")
+    # Edad
+    termcolor.cprint("Age: ", 'green', end='')
     print(person['age'])
 
-    phoneNumbers = person['phoneNumber']
+    # Teléfonos
+    phone_numbers = person['phoneNumber']
+    termcolor.cprint("Phone numbers: ", 'green', end='')
+    print(len(phone_numbers))
 
-    termcolor.cprint("  Phone numbers: ", 'green', end="")
-    print(len(phoneNumbers))
-
-    for j, phone in enumerate(phoneNumbers):
-        termcolor.cprint(f"    Phone {j+1}:", 'red')
-        print("      Type:", phone['type'])
-        print("      Number:", phone['number'])
-
-    print()
+    for i, phone in enumerate(phone_numbers):
+        # Indice del teléfono
+        termcolor.cprint(f"  Phone {i}:", 'blue')
+        # Tipo
+        termcolor.cprint("    Type: ", 'red', end='')
+        print(phone['type'])
+        # Número
+        termcolor.cprint("    Number: ", 'red', end='')
+        print(phone['number'])
+    print() # Salto de línea entre personas

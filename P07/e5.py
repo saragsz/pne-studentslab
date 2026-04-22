@@ -10,19 +10,14 @@ genes = {
     "ANK2": "ENSG00000145362"
 }
 
+server = "rest.ensembl.org"
 
-gene_name = input("Write the gene name: ").upper()
-
-if gene_name in genes:
-    gene_id = genes[gene_name]
-
-    server = "rest.ensembl.org"
+for gene_name, gene_id in genes.items():
     endpoint = f"/sequence/id/{gene_id}"
     params = "?content-type=application/json"
-    url = server + endpoint + params
 
-    print(f"\nServer: {server}")
-    print(f"URL: {url}")
+    print(f"Server: {server}")
+    print(f"URL: {server}{endpoint}{params}")
 
     conn = http.client.HTTPConnection(server)
 
@@ -61,7 +56,7 @@ if gene_name in genes:
             most_freq = max(counts, key=counts.get)
             termcolor.cprint("Most frequent Base: ", 'green', end='')
             print(most_freq)
+
+        print()
     else:
-        print("Error fetching data from server.")
-else:
-    print("Gene not found in dictionary.")
+        print(f"Error fetching data from server for {gene_name}.\n")

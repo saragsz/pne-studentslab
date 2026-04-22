@@ -22,7 +22,13 @@ print(f"Server: {server}")
 print(f"URL: {url}")
 
 conn = http.client.HTTPConnection(server)
-conn.request("GET", endpoint + params)
+
+try:
+    conn.request("GET", endpoint + params)
+except ConnectionRefusedError:
+    print("ERROR! Cannot connect to the Server")
+    exit()
+
 response = conn.getresponse()
 
 print(f"Response received!: {response.status} {response.reason}\n")

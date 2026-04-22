@@ -1,17 +1,23 @@
 import http.client
 import json
 
-SERVER = "rest.ensembl.org"
-ENDPOINT = "/info/ping"
-PARAMS = "?content-type=application/json"
-URL = SERVER + ENDPOINT + PARAMS
+server = "rest.ensembl.org"
+endpoint = "/info/ping"
+params = "?content-type=application/json"
+url = server + endpoint + params
 
 print()
-print(f"Server:{SERVER}")
-print(f"URL: {URL}")
+print(f"Server:{server}")
+print(f"URL: {url}")
 
-conn = http.client.HTTPConnection(SERVER)
-conn.request("GET", ENDPOINT + PARAMS)
+conn = http.client.HTTPConnection(server)
+
+try:
+    conn.request("GET", endpoint + params)
+except ConnectionRefusedError:
+    print("ERROR! Cannot connect to the Server")
+    exit()
+
 response = conn.getresponse()
 
 print(f"Response received!: {response.status} {response.reason}")

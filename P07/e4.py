@@ -11,7 +11,7 @@ genes = {
 }
 
 
-gene_name = input("Write the gene name: ")
+gene_name = input("Write the gene name: ").upper()
 
 if gene_name in genes:
     gene_id = genes[gene_name]

@@ -46,35 +46,42 @@ class SeqHandler(http.server.BaseHTTPRequestHandler):
         elif endpoint == "/karyotype":
             self.handle_karyotype(query_params)
         elif endpoint == "/chromosomeLength":
-            self.handle_chromosome_lenght
+            self.handle_chromosome_length(query_params)
         else:
             self.handle_error()
 
     def handle_main_page(self):
-        html_content = self.read_html("main.html")
+        html_content = self.read_html("html/main.html")
         self.send_response(200)
         self.send_header("Content-type","text/html")
         self.end_headers()
         self.wfile.write(html_content.encode("utf-8"))
 
     def handle_list_species(self, params):
-        limit = params.get("limit",[None])[0]
+        limit = params.get("limit", [None])[0]
 
         ensembl_data = self.ensembl_data("/info/species")
         if not ensembl_data:
             self.handle_error()
             return
-        species_list = ensembl_data.get("species",[])
+
+        species_list = ensembl_data.get('species', [])
+        total_species = len(species_list)
+
+        limite_str = limit if limit and limit.isdigit() else "Todos"
 
         if limit and limit.isdigit():
             species_list = species_list[:int(limit)]
 
         items_html = ""
         for s in species_list:
-            items_html += f"<li>{s.get("display_name", "Unknown")}</li>/n"
+            items_html += f"<li>{s.get('display_name', 'Desconocido')}</li>\n"
 
-        html_content = self.read_html("species.html")
-        html_final = html_content.replace("{lista_especies}", "items_html")
+        html_content = self.read_html("html/species.html")
+
+        html_final = html_content.replace("{total_species}", str(total_species))
+        html_final = html_final.replace("{limite}", limite_str)
+        html_final = html_final.replace("{lista_especies}", items_html)
 
         self.send_response(200)
         self.send_header("Content-type", "text/html")
@@ -100,7 +107,7 @@ class SeqHandler(http.server.BaseHTTPRequestHandler):
         for chromo in karyotype:
             items_html += f"<li>Cromosoma {chromo}</li>\n"
 
-        html_content = self.read_html("karyotype.html")
+        html_content = self.read_html("html/karyotype.html")
         html_final = html_content.replace("{especie}", species).replace("{cromosomas}", items_html)
 
         self.send_response(200)
@@ -132,7 +139,7 @@ class SeqHandler(http.server.BaseHTTPRequestHandler):
             self.handle_error()
             return
 
-        html_content = self.read_html("chromosome.html")
+        html_content = self.read_html("html/chromosome.html")
         html_final = html_content.replace("{especie}", species).replace("{cromosoma}", chromo_target).replace(
             "{longitud}", length)
 
@@ -142,7 +149,7 @@ class SeqHandler(http.server.BaseHTTPRequestHandler):
         self.wfile.write(html_final.encode("utf-8"))
 
     def handle_error(self):
-        html_content = self.read_html("error.html")
+        html_content = self.read_html("html/error.html")
         self.send_response(404)
         self.send_header("Content-type", "text/html")
         self.end_headers()

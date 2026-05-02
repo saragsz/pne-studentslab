@@ -51,7 +51,7 @@ class SeqHandler(http.server.BaseHTTPRequestHandler):
             self.handle_error()
 
     def handle_main_page(self):
-        html_content = self.read_html("index.html")
+        html_content = self.read_html("main.html")
         self.send_response(200)
         self.send_header("Content-type","text/html")
         self.end_headers()
@@ -150,12 +150,12 @@ class SeqHandler(http.server.BaseHTTPRequestHandler):
 
     if __name__ == "__main__":
         with socketserver.TCPServer(("", PORT), SeqHandler) as httpd:
-            print(f"Servidor arrancado en el puerto {PORT}")
-            print(f"Abre en tu navegador: http://localhost:{PORT}")
+            print(f"Server running on port: {PORT}")
+            print(f"Open in your browser: http://localhost:{PORT}")
             try:
                 httpd.serve_forever()
             except KeyboardInterrupt:
-                print("\nServidor detenido.")
+                print("\nServer stopped by the user.")
                 httpd.server_close()
 
 

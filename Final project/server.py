@@ -1,0 +1,162 @@
+import http.server
+import socketserver
+import termcolor
+from pathlib import Path
+from urllib.parse import urlparse, parse_qs
+
+from Seq1 import Seq
+
+PORT = 8080
+
+socketserver.TCPServer.allow_reuse_address = True
+
+class SeqHandler(http.server.BaseHTTPRequestHandler):
+    def read_html(self,filename):
+        file_path = Path(filename)
+        if file_path.exists():
+            return file_path.read_text(encoding= "utf-8")
+        else:
+            return f"File not found"
+
+    def ensembl_data(self, endpoint):
+        server = "rest.ensembl.org"
+        conn = http.client.HTTPConnection(server)
+        params = "?content-type=application/json"
+
+        try:
+            conn.request("GET", endpoint + params)
+            response = conn.getresponse
+
+            if response.status = 200:
+                data = json.loads(response.read().decode("utf-8"))
+                return data
+        except ConnectionRefusedError:
+            print("ERROR! Cannot connect to the Server")
+            exit()
+
+    def do_GET(self):
+        parsed_url = urlparse(self.path)
+        endpoint = parsed_url.path
+        query_params = parse_qs(parsed_url.query)
+
+        if endpoint == "/":
+            self.handle_main_page()
+        elif endpoint == "/listSpecies":
+            self.handle_list_species(query_params)
+        elif endpoint == "/karyotype":
+            self.handle_karyotype(query_params)
+        elif endpoint == "/chromosomeLength":
+            self.handle_chromosome_lenght
+        else:
+            self.handle_error()
+
+    def handle_main_page(self):
+        html_content = self.read_html("index.html")
+        self.send_response(200)
+        self.send_header("Content-type","text/html")
+        self.end_headers()
+        self.wfile.write(html_content.encode("utf-8"))
+
+    def handle_list_species(self, params):
+        limit = params.get("limit",[None])[0]
+
+        ensembl_data = self.ensembl_data("/info/species")
+        if not ensembl_data:
+            self.handle_error()
+            return
+        species_list = ensembl_data.get("species",[])
+
+        if limit and limit.isdigit():
+            species_list = species_list[:int(limit)]
+
+        items_html = ""
+        for s in species_list:
+            items_html += f"<li>{s.get("display_name", "Unknown")}</li>/n"
+
+        html_content = self.read_html("species.html")
+        html_final = html_content.replace("{lista_especies}", "items_html")
+
+        self.send_response(200)
+        self.send_header("Content-type", "text/html")
+        self.end_headers()
+        self.wfile.write(html_final.encode("utf-8"))
+
+    def handle_karyotype(self, params):
+        species = params.get("species", [""])[0]
+        if not species:
+            self.handle_error()
+            return
+
+        safe_species = species.replace(" ", "%20")
+        ensembl_data = self.ensembl_data(f"/info/assembly/{safe_species}")
+
+        if not ensembl_data or 'karyotype' not in ensembl_data:
+            self.handle_error()
+            return
+
+        karyotype = ensembl_data['karyotype']
+
+        items_html = ""
+        for chromo in karyotype:
+            items_html += f"<li>Cromosoma {chromo}</li>\n"
+
+        html_content = self.read_html("karyotype.html")
+        html_final = html_content.replace("{especie}", species).replace("{cromosomas}", items_html)
+
+        self.send_response(200)
+        self.send_header("Content-type", "text/html")
+        self.end_headers()
+        self.wfile.write(html_final.encode("utf-8"))
+
+    def handle_chromosome_length(self, params):
+        species = params.get("species", [""])[0]
+        chromo_target = params.get("chromo", [""])[0]
+
+        if not species or not chromo_target:
+            self.handle_error()
+            return
+
+        safe_species = species.replace(" ", "%20")
+        ensembl_data = self.ensembl_data(f"/info/assembly/{safe_species}")
+        if not ensembl_data or 'top_level_region' not in ensembl_data:
+            self.handle_error()
+            return
+
+        length = "Not found"
+        for region in ensembl_data['top_level_region']:
+            if region['name'] == chromo_target:
+                length = str(region['length'])
+                break
+
+        if length == "Not found"
+            self.handle_error()
+            return
+
+        html_content = self.read_html("chromosome.html")
+        html_final = html_content.replace("{especie}", species).replace("{cromosoma}", chromo_target).replace(
+            "{longitud}", length)
+
+        self.send_response(200)
+        self.send_header("Content-type", "text/html")
+        self.end_headers()
+        self.wfile.write(html_final.encode("utf-8"))
+
+    def handle_error(self):
+        html_content = self.read_html("error.html")
+        self.send_response(404)
+        self.send_header("Content-type", "text/html")
+        self.end_headers()
+        self.wfile.write(html_content.encode("utf-8"))
+
+    if __name__ == "__main__":
+        with socketserver.TCPServer(("", PORT), SeqHandler) as httpd:
+            print(f"Servidor arrancado en el puerto {PORT}")
+            print(f"Abre en tu navegador: http://localhost:{PORT}")
+            try:
+                httpd.serve_forever()
+            except KeyboardInterrupt:
+                print("\nServidor detenido.")
+                httpd.server_close()
+
+
+

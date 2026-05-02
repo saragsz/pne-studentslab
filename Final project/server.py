@@ -1,8 +1,8 @@
 import http.server
 import socketserver
-import termcolor
 from pathlib import Path
 from urllib.parse import urlparse, parse_qs
+import json
 
 from Seq1 import Seq
 
@@ -25,9 +25,9 @@ class SeqHandler(http.server.BaseHTTPRequestHandler):
 
         try:
             conn.request("GET", endpoint + params)
-            response = conn.getresponse
+            response = conn.getresponse()
 
-            if response.status = 200:
+            if response.status == 200:
                 data = json.loads(response.read().decode("utf-8"))
                 return data
         except ConnectionRefusedError:
@@ -135,7 +135,7 @@ class SeqHandler(http.server.BaseHTTPRequestHandler):
                 length = str(region['length'])
                 break
 
-        if length == "Not found"
+        if length == "Not found":
             self.handle_error()
             return
 
@@ -155,15 +155,15 @@ class SeqHandler(http.server.BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(html_content.encode("utf-8"))
 
-    if __name__ == "__main__":
-        with socketserver.TCPServer(("", PORT), SeqHandler) as httpd:
-            print(f"Server running on port: {PORT}")
-            print(f"Open in your browser: http://localhost:{PORT}")
-            try:
-                httpd.serve_forever()
-            except KeyboardInterrupt:
-                print("\nServer stopped by the user.")
-                httpd.server_close()
+if __name__ == "__main__":
+    with socketserver.TCPServer(("", PORT), SeqHandler) as httpd:
+        print(f"Server running on port: {PORT}")
+        print(f"Open in your browser: http://localhost:{PORT}")
+        try:
+            httpd.serve_forever()
+        except KeyboardInterrupt:
+            print("\nServer stopped by the user.")
+            httpd.server_close()
 
 
 

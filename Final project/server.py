@@ -10,7 +10,7 @@ PORT = 8080
 
 socketserver.TCPServer.allow_reuse_address = True
 
-class SeqHandler(http.server.BaseHTTPRequestHandler):
+class ProjectHandler(http.server.BaseHTTPRequestHandler):
     def read_html(self,filename):
         file_path = Path(filename)
         if file_path.exists():
@@ -37,16 +37,16 @@ class SeqHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         parsed_url = urlparse(self.path)
         endpoint = parsed_url.path
-        query_params = parse_qs(parsed_url.query)
+        second_params = parse_qs(parsed_url.query)
 
         if endpoint == "/":
             self.handle_main_page()
         elif endpoint == "/listSpecies":
-            self.handle_list_species(query_params)
+            self.handle_list_species(second_params)
         elif endpoint == "/karyotype":
-            self.handle_karyotype(query_params)
+            self.handle_karyotype(second_params)
         elif endpoint == "/chromosomeLength":
-            self.handle_chromosome_length(query_params)
+            self.handle_chromosome_length(second_params)
         else:
             self.handle_error()
 
@@ -68,7 +68,7 @@ class SeqHandler(http.server.BaseHTTPRequestHandler):
         species_list = ensembl_data.get('species', [])
         total_species = len(species_list)
 
-        limite_str = limit if limit and limit.isdigit() else "Todos"
+        limit_str = limit if limit and limit.isdigit() else "Todos"
 
         if limit and limit.isdigit():
             species_list = species_list[:int(limit)]
@@ -80,7 +80,7 @@ class SeqHandler(http.server.BaseHTTPRequestHandler):
         html_content = self.read_html("html/species.html")
 
         html_final = html_content.replace("{total_species}", str(total_species))
-        html_final = html_final.replace("{limite}", limite_str)
+        html_final = html_final.replace("{limite}", limit_str)
         html_final = html_final.replace("{lista_especies}", items_html)
 
         self.send_response(200)
@@ -156,7 +156,7 @@ class SeqHandler(http.server.BaseHTTPRequestHandler):
         self.wfile.write(html_content.encode("utf-8"))
 
 if __name__ == "__main__":
-    with socketserver.TCPServer(("", PORT), SeqHandler) as httpd:
+    with socketserver.TCPServer(("", PORT), ProjectHandler) as httpd:
         print(f"Server running on port: {PORT}")
         print(f"Open in your browser: http://localhost:{PORT}")
         try:

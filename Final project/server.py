@@ -47,6 +47,10 @@ class ProjectHandler(http.server.BaseHTTPRequestHandler):
             self.handle_karyotype(second_params)
         elif endpoint == "/chromosomeLength":
             self.handle_chromosome_length(second_params)
+        elif endpoint == "/geneLookup":
+            self.handle_gene_lookup(second_params)
+        elif endpoint == "/geneSeq":
+            self.handle_gene_seq(second_params)
         else:
             self.handle_error()
 
@@ -105,7 +109,7 @@ class ProjectHandler(http.server.BaseHTTPRequestHandler):
 
         items_html = ""
         for chromo in karyotype:
-            items_html += f"<li>Cromosoma {chromo}</li>\n"
+            items_html += f"<li>{chromo}</li>\n"
 
         html_content = self.read_html("html/karyotype.html")
         html_final = html_content.replace("{especie}", species).replace("{cromosomas}", items_html)
@@ -142,6 +146,61 @@ class ProjectHandler(http.server.BaseHTTPRequestHandler):
         html_content = self.read_html("html/chromosome.html")
         html_final = html_content.replace("{especie}", species).replace("{cromosoma}", chromo_target).replace(
             "{longitud}", length)
+
+        self.send_response(200)
+        self.send_header("Content-type", "text/html")
+        self.end_headers()
+        self.wfile.write(html_final.encode("utf-8"))
+
+    def handle_gene_lookup(self, params):
+        gene_name = params.get("gene", [""])[0]
+        if not gene_name:
+            self.handle_error()
+            return
+
+        ensembl_data = self.ensembl_data(f"/lookup/symbol/homo_sapiens/{gene_name}")
+
+        if not ensembl_data or 'id' not in ensembl_data:
+            self.handle_error()
+            return
+
+        gene_id = ensembl_data['id']
+
+        html_content = self.read_html("html/gene_lookup.html")
+        html_final = html_content.replace("{gene_name}", gene_name).replace("{gene_id}", gene_id)
+
+        self.send_response(200)
+        self.send_header("Content-type", "text/html")
+        self.end_headers()
+        self.wfile.write(html_final.encode("utf-8"))
+
+    def handle_gene_seq(self,params):
+        gene_name = params.get("gene", [""])[0]
+        if not gene_name:
+            self.handle_error()
+            return
+
+        lookup_data = self.ensembl_data(f"/lookup/symbol/homo_sapiens/{gene_name}")
+        if not lookup_data or 'id' not in lookup_data:
+            self.handle_error()
+            return
+
+        gene_id = lookup_data['id']
+
+        seq_data = self.ensembl_data(f"/sequence/id/{gene_id}")
+
+        if not seq_data or 'seq' not in seq_data:
+            self.handle_error()
+            return
+
+        sequence = seq_data['seq']
+
+        my_seq = Seq(sequence)
+
+        html_content = self.read_html("html/gene_seq.html")
+
+        html_final = html_content.replace("{gene_name}", gene_name)
+        html_final = html_final.replace("{sequence}", str(my_seq))
 
         self.send_response(200)
         self.send_header("Content-type", "text/html")

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GENE CALCULATIONS</title>
+</head>
+<body style="background-color: #bce2e8; font-family: serif; color: black;">
+    <h2>Calculations for gene: {{ context.gene_name }}</h2>
+    <p><strong>Total length:</strong> {{ context.length }} bases</p>
+
+    <p><strong>Frequencies:</strong></p>
+    <ul>
+        <li><strong>A:</strong> {{ context.count_A }} ({{ context.perc_A }}%)</li>
+        <li><strong>C:</strong> {{ context.count_C }} ({{ context.perc_C }}%)</li>
+        <li><strong>G:</strong> {{ context.count_G }} ({{ context.perc_G }}%)</li>
+        <li><strong>T:</strong> {{ context.count_T }} ({{ context.perc_T }}%)</li>
+    </ul>
+    <br><br>
+    <a href="/">Go back to the main page</a>
+</body>
+</html>

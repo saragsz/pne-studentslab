@@ -55,6 +55,10 @@ class ProjectHandler(http.server.BaseHTTPRequestHandler):
             self.handle_gene_seq(second_params)
         elif endpoint == "/geneInfo":
             self.handle_gene_info(second_params)
+        elif endpoint == "/geneCalc":
+            self.handle_gene_calc(second_params)
+        elif endpoint == "/geneList":
+            self.handle_gene_list(second_params)
         else:
             self.handle_error()
 
@@ -262,6 +266,92 @@ class ProjectHandler(http.server.BaseHTTPRequestHandler):
         self.send_header("Content-type", "text/html")
         self.end_headers()
         self.wfile.write(html_final.encode("utf-8"))
+
+    def handle_gene_calc(self, params):
+        gene_name = params.get("gene", [""])[0]
+        if not gene_name:
+            self.handle_error()
+            return
+
+        lookup_data = self.ensembl_data(f"/lookup/symbol/homo_sapiens/{gene_name}")
+        if not lookup_data or 'id' not in lookup_data:
+            self.handle_error()
+            return
+        gene_id = lookup_data['id']
+
+        seq_data = self.ensembl_data(f"/sequence/id/{gene_id}")
+        if not seq_data or 'seq' not in seq_data:
+            self.handle_error()
+            return
+
+        raw_sequence = seq_data['seq']
+        my_seq = Seq(raw_sequence)
+        total_length = my_seq.len()
+
+        counts = my_seq.count()
+
+        if total_length > 0:
+            perc_A = round((counts.get('A', 0) / total_length) * 100, 2)
+            perc_C = round((counts.get('C', 0) / total_length) * 100, 2)
+            perc_G = round((counts.get('G', 0) / total_length) * 100, 2)
+            perc_T = round((counts.get('T', 0) / total_length) * 100, 2)
+        else:
+            perc_A = perc_C = perc_G = perc_T = 0
+
+        template = self.read_html("html/gene_calc.html")
+        context_data = {
+            "gene_name": gene_name,
+            "length": total_length,
+            "count_A": counts.get('A', 0), "perc_A": perc_A,
+            "count_C": counts.get('C', 0), "perc_C": perc_C,
+            "count_G": counts.get('G', 0), "perc_G": perc_G,
+            "count_T": counts.get('T', 0), "perc_T": perc_T
+        }
+        html_final = template.render(context=context_data)
+
+        self.send_response(200)
+        self.send_header("Content-type", "text/html")
+        self.end_headers()
+        self.wfile.write(html_final.encode("utf-8"))
+
+    def handle_gene_list(self, params):
+        chromo = params.get("chromo", [""])[0]
+        start = params.get("start", [""])[0]
+        end = params.get("end", [""])[0]
+
+        if not chromo or not start or not end:
+            self.handle_error()
+            return
+
+        endpoint = f"/overlap/region/human/{chromo}:{start}-{end}?feature=gene"
+        ensembl_data = self.ensembl_data(endpoint)
+
+        if ensembl_data is None or not isinstance(ensembl_data, list):
+            self.handle_error()
+            return
+
+        items_html = ""
+        for gene in ensembl_data:
+            name = gene.get('external_name', gene.get('id', 'Desconocido'))
+            items_html += f"<li>{name}</li>\n"
+
+        if not items_html:
+            items_html = "<li>No genes found in this region.</li>"
+
+        template = self.read_html("html/gene_list.html")
+        context_data = {
+            "chromo": chromo,
+            "start": start,
+            "end": end,
+            "gene_list_html": items_html
+        }
+        html_final = template.render(context=context_data)
+
+        self.send_response(200)
+        self.send_header("Content-type", "text/html")
+        self.end_headers()
+        self.wfile.write(html_final.encode("utf-8"))
+
 
     def handle_error(self):
         template = self.read_html("html/error.html")

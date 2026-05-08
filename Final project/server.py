@@ -3,6 +3,7 @@ import socketserver
 from pathlib import Path
 from urllib.parse import urlparse, parse_qs
 import json
+import jinja2 as j
 
 from Seq1 import Seq
 
@@ -14,9 +15,10 @@ class ProjectHandler(http.server.BaseHTTPRequestHandler):
     def read_html(self,filename):
         file_path = Path(filename)
         if file_path.exists():
-            return file_path.read_text(encoding= "utf-8")
+            contents = file_path.read_text(encoding="utf-8")
+            return j.Template(contents)
         else:
-            return f"File not found"
+            return j.Template("<html><body><h1> File not found</h1></body></html>")
 
     def ensembl_data(self, endpoint):
         server = "rest.ensembl.org"
@@ -55,11 +57,12 @@ class ProjectHandler(http.server.BaseHTTPRequestHandler):
             self.handle_error()
 
     def handle_main_page(self):
-        html_content = self.read_html("html/main.html")
+        template = self.read_html("html/main.html")
+        html_final = template.render()
         self.send_response(200)
         self.send_header("Content-type","text/html")
         self.end_headers()
-        self.wfile.write(html_content.encode("utf-8"))
+        self.wfile.write(html_final.encode("utf-8"))
 
     def handle_list_species(self, params):
         limit = params.get("limit", [None])[0]
@@ -81,11 +84,13 @@ class ProjectHandler(http.server.BaseHTTPRequestHandler):
         for s in species_list:
             items_html += f"<li>{s.get('display_name', 'Desconocido')}</li>\n"
 
-        html_content = self.read_html("html/species.html")
-
-        html_final = html_content.replace("{total_species}", str(total_species))
-        html_final = html_final.replace("{limite}", limit_str)
-        html_final = html_final.replace("{lista_especies}", items_html)
+        template = self.read_html("html/species.html")
+        context_data = {
+            "total_species": total_species,
+            "limit": limit_str,
+            "list_species":items_html
+        }
+        html_final = template.render(context=context_data)
 
         self.send_response(200)
         self.send_header("Content-type", "text/html")
@@ -111,8 +116,12 @@ class ProjectHandler(http.server.BaseHTTPRequestHandler):
         for chromo in karyotype:
             items_html += f"<li>{chromo}</li>\n"
 
-        html_content = self.read_html("html/karyotype.html")
-        html_final = html_content.replace("{especie}", species).replace("{cromosomas}", items_html)
+        template = self.read_html("html/karyotype.html")
+        context_data = {
+            "specie": species,
+            "chromosomes": items_html,
+        }
+        html_final = template.render(context=context_data)
 
         self.send_response(200)
         self.send_header("Content-type", "text/html")
@@ -143,9 +152,13 @@ class ProjectHandler(http.server.BaseHTTPRequestHandler):
             self.handle_error()
             return
 
-        html_content = self.read_html("html/chromosome.html")
-        html_final = html_content.replace("{especie}", species).replace("{cromosoma}", chromo_target).replace(
-            "{longitud}", length)
+        template = self.read_html("html/chromosome.html")
+        context_data = {
+            "specie": species,
+            "chromosome": chromo_target,
+            "length": length
+        }
+        html_final = template.render(context=context_data)
 
         self.send_response(200)
         self.send_header("Content-type", "text/html")
@@ -166,8 +179,12 @@ class ProjectHandler(http.server.BaseHTTPRequestHandler):
 
         gene_id = ensembl_data['id']
 
-        html_content = self.read_html("html/gene_lookup.html")
-        html_final = html_content.replace("{gene_name}", gene_name).replace("{gene_id}", gene_id)
+        template = self.read_html("html/gene_lookup.html")
+        context_data= {
+            "gene_name": gene_name,
+            "gene_id": gene_id,
+        }
+        html_final = template.render(context=context_data)
 
         self.send_response(200)
         self.send_header("Content-type", "text/html")

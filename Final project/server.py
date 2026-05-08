@@ -214,10 +214,12 @@ class ProjectHandler(http.server.BaseHTTPRequestHandler):
 
         my_seq = Seq(sequence)
 
-        html_content = self.read_html("html/gene_seq.html")
-
-        html_final = html_content.replace("{gene_name}", gene_name)
-        html_final = html_final.replace("{sequence}", str(my_seq))
+        template = self.read_html("html/gene_seq.html")
+        context_data = {
+            "gene_name" : gene_name,
+            "sequence" : str(my_seq)
+        }
+        html_final = template.render(context=context_data)
 
         self.send_response(200)
         self.send_header("Content-type", "text/html")
@@ -225,11 +227,13 @@ class ProjectHandler(http.server.BaseHTTPRequestHandler):
         self.wfile.write(html_final.encode("utf-8"))
 
     def handle_error(self):
-        html_content = self.read_html("html/error.html")
+        template = self.read_html("html/error.html")
+        html_final = template.render()
+
         self.send_response(404)
         self.send_header("Content-type", "text/html")
         self.end_headers()
-        self.wfile.write(html_content.encode("utf-8"))
+        self.wfile.write(html_final.encode("utf-8"))
 
 if __name__ == "__main__":
     with socketserver.TCPServer(("", PORT), ProjectHandler) as httpd:

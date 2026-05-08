@@ -53,6 +53,8 @@ class ProjectHandler(http.server.BaseHTTPRequestHandler):
             self.handle_gene_lookup(second_params)
         elif endpoint == "/geneSeq":
             self.handle_gene_seq(second_params)
+        elif endpoint == "/geneInfo":
+            self.handle_gene_info(second_params)
         else:
             self.handle_error()
 
@@ -218,6 +220,41 @@ class ProjectHandler(http.server.BaseHTTPRequestHandler):
         context_data = {
             "gene_name" : gene_name,
             "sequence" : str(my_seq)
+        }
+        html_final = template.render(context=context_data)
+
+        self.send_response(200)
+        self.send_header("Content-type", "text/html")
+        self.end_headers()
+        self.wfile.write(html_final.encode("utf-8"))
+
+    def handle_gene_info(self, params):
+        gene_name = params.get("gene", [""])[0]
+        if not gene_name:
+            self.handle_error()
+            return
+
+        ensembl_data = self.ensembl_data(f"/lookup/symbol/homo_sapiens/{gene_name}")
+
+        if not ensembl_data or 'id' not in ensembl_data:
+            self.handle_error()
+            return
+
+        gene_id = ensembl_data['id']
+        start = ensembl_data['start']
+        end = ensembl_data['end']
+        chromosome = ensembl_data['seq_region_name']
+
+        length = end - start + 1
+
+        template = self.read_html("html/gene_info.html")
+        context_data = {
+            "gene_name": gene_name,
+            "gene_id": gene_id,
+            "chromosome": chromosome,
+            "start": start,
+            "end": end,
+            "length": length
         }
         html_final = template.render(context=context_data)
 

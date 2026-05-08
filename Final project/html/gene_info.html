@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GENE INFO</title>
+</head>
+<body style="background-color: #bce2e8; font-family: serif; color: black;">
+    <h2>Information for gene: {{ context.gene_name }}</h2>
+    <ul>
+        <li><strong>Ensembl ID:</strong> {{ context.gene_id }}</li>
+        <li><strong>Chromosome:</strong> {{ context.chromosome }}</li>
+        <li><strong>Start position:</strong> {{ context.start }}</li>
+        <li><strong>End position:</strong> {{ context.end }}</li>
+        <li><strong>Length:</strong> {{ context.length }} bases</li>
+    </ul>
+    <br><br>
+    <a href="/">Go back to the main page</a>
+</body>
+</html>

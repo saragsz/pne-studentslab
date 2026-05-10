@@ -23,8 +23,11 @@ class ProjectHandler(http.server.BaseHTTPRequestHandler):
     def ensembl_data(self, endpoint):
         server = "rest.ensembl.org"
         conn = http.client.HTTPConnection(server)
-        params = "?content-type=application/json"
 
+        if "?" in endpoint:
+            params = "&content-type=application/json"
+        else:
+            params = "?content-type=application/json"
         try:
             conn.request("GET", endpoint + params)
             response = conn.getresponse()
@@ -32,6 +35,10 @@ class ProjectHandler(http.server.BaseHTTPRequestHandler):
             if response.status == 200:
                 data = json.loads(response.read().decode("utf-8"))
                 return data
+            else:
+                print(f"Error de Ensembl: {response.status} en {endpoint}")
+                return None
+
         except ConnectionRefusedError:
             print("ERROR! Cannot connect to the Server")
             exit()
@@ -315,9 +322,9 @@ class ProjectHandler(http.server.BaseHTTPRequestHandler):
         self.wfile.write(html_final.encode("utf-8"))
 
     def handle_gene_list(self, params):
-        chromo = params.get("chromo", [""])[0]
-        start = params.get("start", [""])[0]
-        end = params.get("end", [""])[0]
+        chromo = params.get("chromo", [""])[0].strip()
+        start = params.get("start", [""])[0].strip()
+        end = params.get("end", [""])[0].strip()
 
         if not chromo or not start or not end:
             self.handle_error()

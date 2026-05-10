@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GENE LIST</title>
+</head>
+<body style="background-color: #bce2e8; font-family: serif; color: black;">
+    <h2>Genes in Chromosome {{ context.chromo }}</h2>
+    <p><strong>Region:</strong> from {{ context.start }} to {{ context.end }}</p>
+
+    <ul>
+        {{ context.gene_list_html }}
+    </ul>
+    <br><br>
+    <a href="/">Go back to the main page</a>
+</body>
+</html>

@@ -4,30 +4,49 @@ import json
 SERVER = "localhost"
 PORT = 8080
 
-print(f"Conectando al servidor {SERVER}:{PORT}...")
+
+def make_request(endpoint):
+    try:
+        conn = http.client.HTTPConnection(SERVER, PORT)
+        conn.request("GET", endpoint)
+        response = conn.getresponse()
+
+        if response.status == 200:
+            data_string = response.read().decode("utf-8")
+            return json.loads(data_string)
+        else:
+            print(f"HTTP Error: {response.status}")
+            return None
+    except ConnectionRefusedError:
+        print("Error: Could not connect. Is server.py running?")
+        return None
 
 
-conn = http.client.HTTPConnection(SERVER, PORT)
+def main():
+    print("--------------------------------------------------")
+    print("             REST API CLIENT TEST                 ")
+    print("--------------------------------------------------")
 
-endpoint = "/geneInfo?gene=FRAT1&json=1"
+    # 1. Test data endpoint: Gene Info
+    print("\n[Test 1] Getting data for FRAT1 gene...")
+    gene_data = make_request("/geneInfo?gene=FRAT1&json=1")
 
-try:
-    print(f"Asking data to: {endpoint}")
-    conn.request("GET", endpoint)
-    response = conn.getresponse()
+    if gene_data:
+        print(f"Success! The gene {gene_data['gene_name']} (ID: {gene_data['gene_id']})")
+        print(f"is located on chromosome {gene_data['chromosome']}")
+        print(f"and has a length of {gene_data['length']} bases.")
 
-    if response.status == 200:
-        data_string = response.read().decode("utf-8")
-        data_json = json.loads(data_string)
+    # 2. Test list endpoint: Species list
+    print("\n[Test 2] Getting a list of 3 species...")
+    species_data = make_request("/listSpecies?limit=3&json=1")
 
-        print("\n--- DATA RECEIVED BY THE SERVER ---")
-        print(f"Gen: {data_json['gene_name']}")
-        print(f"ID Ensembl: {data_json['gene_id']}")
-        print(f"Chromosome: {data_json['chromosome']}")
-        print(f"Length: {data_json['length']} pares de bases")
-        print("------------------------------------")
-    else:
-        print(f"Error: {response.status}")
+    if species_data:
+        print(f"Success! The database has {species_data['total_species']} species in total.")
+        print("The first 3 species extracted from the JSON are:")
+        for species in species_data['raw_species_names']:
+            print(f"  - {species}")
 
-except ConnectionRefusedError:
-    print("Error")
+    print("\n--------------------------------------------------")
+
+if __name__ == "__main__":
+    main()

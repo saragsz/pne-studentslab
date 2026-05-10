@@ -267,12 +267,24 @@ class ProjectHandler(http.server.BaseHTTPRequestHandler):
             "end": end,
             "length": length
         }
-        html_final = template.render(context=context_data)
+        json_param = params.get("json", ["0"])[0]
 
-        self.send_response(200)
-        self.send_header("Content-type", "text/html")
-        self.end_headers()
-        self.wfile.write(html_final.encode("utf-8"))
+        if json_param == "1":
+            # MODO API: Devolvemos el diccionario en formato JSON
+            self.send_response(200)
+            self.send_header("Content-type", "application/json")
+            self.end_headers()
+            # Convertimos context_data a string de JSON y lo enviamos
+            self.wfile.write(json.dumps(context_data).encode("utf-8"))
+        else:
+            # MODO WEB NORMAL: Renderizamos con Jinja2
+            template = self.read_html("html/gene_info.html")
+            html_final = template.render(context=context_data)
+
+            self.send_response(200)
+            self.send_header("Content-type", "text/html")
+            self.end_headers()
+            self.wfile.write(html_final.encode("utf-8"))
 
     def handle_gene_calc(self, params):
         gene_name = params.get("gene", [""])[0]

@@ -27,7 +27,6 @@ def main():
     print("             REST API CLIENT TEST                 ")
     print("--------------------------------------------------")
 
-    # 1. Test data endpoint: Gene Info
     print("\n[Test 1] Getting data for FRAT1 gene...")
     gene_data = make_request("/geneInfo?gene=FRAT1&json=1")
 
@@ -36,7 +35,7 @@ def main():
         print(f"is located on chromosome {gene_data['chromosome']}")
         print(f"and has a length of {gene_data['length']} bases.")
 
-    # 2. Test list endpoint: Species list
+
     print("\n[Test 2] Getting a list of 3 species...")
     species_data = make_request("/listSpecies?limit=3&json=1")
 

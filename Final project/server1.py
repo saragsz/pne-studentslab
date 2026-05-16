@@ -38,7 +38,7 @@ class ProjectHandler(http.server.BaseHTTPRequestHandler):
                 data = json.loads(response.read().decode("utf-8"))
                 return data
             else:
-                print(f"Error de Ensembl: {response.status} en {endpoint}")
+                print(f"Ensembl error: {response.status} in {endpoint}")
                 return None
         except ConnectionRefusedError:
             print("ERROR! Cannot connect to the Server")
@@ -68,28 +68,28 @@ class ProjectHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         parsed_url = urlparse(self.path)
         endpoint = parsed_url.path
-        second_params = parse_qs(parsed_url.query)
+        query_params = parse_qs(parsed_url.query)
 
         if endpoint == "/":
-            self.handle_main_page(second_params)
+            self.handle_main_page(query_params)
         elif endpoint == "/listSpecies":
-            self.handle_list_species(second_params)
+            self.handle_list_species(query_params)
         elif endpoint == "/karyotype":
-            self.handle_karyotype(second_params)
+            self.handle_karyotype(query_params)
         elif endpoint == "/chromosomeLength":
-            self.handle_chromosome_length(second_params)
+            self.handle_chromosome_length(query_params)
         elif endpoint == "/geneLookup":
-            self.handle_gene_lookup(second_params)
+            self.handle_gene_lookup(query_params)
         elif endpoint == "/geneSeq":
-            self.handle_gene_seq(second_params)
+            self.handle_gene_seq(query_params)
         elif endpoint == "/geneInfo":
-            self.handle_gene_info(second_params)
+            self.handle_gene_info(query_params)
         elif endpoint == "/geneCalc":
-            self.handle_gene_calc(second_params)
+            self.handle_gene_calc(query_params)
         elif endpoint == "/geneList":
-            self.handle_gene_list(second_params)
+            self.handle_gene_list(query_params)
         else:
-            self.handle_error(second_params)
+            self.handle_error(query_params)
 
     def handle_main_page(self, params):
         self.render_response(params, "html/main.html")

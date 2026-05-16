@@ -17,7 +17,7 @@
     <p><b>1)List of species in the genome database</b></p>
     <form action="/listSpecies" method="get">
         Limit :
-        <input type="text" name="limit" style="width:200px;">
+        <input type="text" name="limit" placeholder="e.g 10" style="width:200px;">
         <br><br>
         <input type="submit" value="Send">
     </form>
@@ -25,7 +25,7 @@
     <p><b>2)Information about the karyotype :</b></p>
     <form action="/karyotype" method="get">
         Select the species :
-        <input type="text" name="species" style="width:200px;">
+        <input type="text" name="species" placeholder="e.g homo sapiens" style="width:200px;">
         <br><br>
         <input type="submit" value="Send">
     </form>
@@ -33,10 +33,10 @@
     <p><b>3)Chromosome Length</b></p>
     <form action="/chromosomeLength" method="get">
         Select the species :
-        <input type="text" name="species" style="width:200px;">
+        <input type="text" name="species" placeholder="e.g homo sapiens" style="width:200px;">
         <br><br>
         Select the chromosome :
-        <input type="text" name="chromo" style="width:200px;">
+        <input type="text" name="chromo" placeholder="e.g X" style="width:200px;">
         <br><br>
         <input type="submit" value="Send">
     </form>

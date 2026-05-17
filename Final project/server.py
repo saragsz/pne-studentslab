@@ -104,7 +104,7 @@ class ProjectHandler(http.server.BaseHTTPRequestHandler):
         species_list = ensembl_data.get('species', [])
         total_species = len(species_list)
 
-        limit_str = limit if limit and limit.isdigit() else "Todos"
+        limit_str = limit if limit and limit.isdigit() else "All"
         if limit and limit.isdigit():
             species_list = species_list[:int(limit)]
 

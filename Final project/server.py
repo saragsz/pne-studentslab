@@ -111,7 +111,7 @@ class ProjectHandler(http.server.BaseHTTPRequestHandler):
         items_html = ""
         raw_species_names = []
         for s in species_list:
-            name = s.get('display_name', 'Desconocido')
+            name = s.get('display_name', 'Unknown')
             items_html += f"<li>{name}</li>\n"
             raw_species_names.append(name)
 
@@ -303,7 +303,7 @@ class ProjectHandler(http.server.BaseHTTPRequestHandler):
         items_html = ""
         raw_gene_names = []
         for gene in ensembl_data:
-            name = gene.get('external_name', gene.get('id', 'Desconocido'))
+            name = gene.get('external_name', gene.get('id', 'Unknown'))
             items_html += f"<li>{name}</li>\n"
             raw_gene_names.append(name)
 
